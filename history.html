@@ -314,7 +314,7 @@
         document.getElementById('totalAmount').textContent = 'Итого: 0.00';
 
         try {
-            const url = `http://5.129.207.51:5000/get_expenses?month=${month}&year=${year}` + (category ? `&category=${category}` : '');
+            const url = `https://5.129.207.51:5000/get_expenses?month=${month}&year=${year}` + (category ? `&category=${category}` : '');
             const response = await fetch(url);
             const data = await response.json();
 
