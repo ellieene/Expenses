@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавить расход</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #DAF1DE;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: #8EB69B;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            width: 350px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #0B2B26;
+            margin-bottom: 25px;
+        }
+
+        .label {
+            color: #163832;
+            margin-bottom: 8px;
+            display: block;
+            font-weight: bold;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .button-grid button {
+            background: #235347;
+            color: #DAF1DE;
+            border: none;
+            padding: 12px 0;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+
+        .button-grid button:hover {
+            background: #163832;
+        }
+
+        input[type="tel"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 10px;
+            border: none;
+            margin-bottom: 20px;
+            text-align: right;
+            background: #DAF1DE;
+            color: #0B2B26;
+        }
+
+        .submit-btn {
+            background: #0B2B26;
+            color: #DAF1DE;
+            border: none;
+            padding: 12px 0;
+            width: 100%;
+            font-size: 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #163832;
+        }
+
+        .selected {
+            border: 2px solid #0B2B26;
+        }
+    </style>
+</head>
+<body>
+<div style="display: block; margin: 0px 0px 14px 326px;">
+    <button class="submit-btn" id="historyBtn" style="background: #235347; padding: 8px 12px; font-size: 14px;">История</button>
+</div>
+<div class="container">
+    <h1>Добавить расход</h1>
+
+    <label class="label">Критерий:</label>
+    <div class="button-grid">
+        <button type="button" class="category-btn" data-value="Машина">Машина</button>
+        <button type="button" class="category-btn" data-value="Продукты">Продукты</button>
+        <button type="button" class="category-btn" data-value="Квартира">Квартира</button>
+        <button type="button" class="category-btn" data-value="Разное">Разное</button>
+    </div>
+
+    <label class="label">Сумма:</label>
+    <input
+            type="tel"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            placeholder="0.000"
+            id="amount">
+
+    <button class="submit-btn" id="submitBtn">Отправить</button>
+</div>
+
+<script>
+
+    document.getElementById('historyBtn').addEventListener('click', () => {
+        window.location.href = 'history.html'; // откроет history.html из той же папки
+    });
+    const amountInput = document.getElementById('amount');
+    let selectedCategory = null;
+
+    // Выбор категории
+    document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.category-btn').forEach(c => c.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedCategory = btn.getAttribute('data-value');
+        });
+    });
+
+    // Форматирование суммы с сохранением позиции курсора
+    amountInput.addEventListener('input', (e) => {
+        let start = amountInput.selectionStart;
+        let end = amountInput.selectionEnd;
+
+        // Убираем все кроме цифр
+        let val = amountInput.value.replace(/\D/g, '');
+
+        // Форматируем с точками каждые 3 цифры
+        let formatted = '';
+        let count = 0;
+        for (let i = val.length - 1; i >= 0; i--) {
+            formatted = val[i] + formatted;
+            count++;
+            if (count % 3 === 0 && i !== 0) formatted = '.' + formatted;
+        }
+
+        // Корректируем позицию курсора
+        let diff = formatted.length - val.length;
+        amountInput.value = formatted;
+        let newPos = start + diff;
+        amountInput.setSelectionRange(newPos, newPos);
+    });
+
+    // Отправка данных
+    document.getElementById('submitBtn').addEventListener('click', async () => {
+        const amountStr = amountInput.value.replace(/\./g, '');
+        const amount = parseFloat(amountStr);
+
+        if (!selectedCategory) return alert('Выберите категорию!');
+        if (isNaN(amount) || amount <= 0) return alert('Введите корректную сумму!');
+
+        const data = { category: selectedCategory, amount };
+
+        // Пример fetch-запроса
+        try {
+            const response = await fetch('http://5.129.207.51:5000/add_expense', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if(response.ok){
+                alert('Расход добавлен!');
+                amountInput.value = '';
+                document.querySelectorAll('.category-btn').forEach(c => c.classList.remove('selected'));
+                selectedCategory = null;
+            } else {
+                alert('Ошибка при добавлении расхода.');
+            }
+        } catch (err) {
+            alert('Ошибка соединения с сервером.');
+        }
+    });
+</script>
+</body>
+</html>
