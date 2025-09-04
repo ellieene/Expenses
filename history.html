@@ -199,6 +199,23 @@
             font-weight: bold;
             margin-top: 10px;
         }
+
+        /* Если высота больше 560px */
+        .modal-content:has(#expensesList) {
+            min-height: 561px; /* триггер для смещения */
+        }
+
+        /* Смещаем элементы вниз на 20px */
+
+        .modal-content:has(#expensesList) .close-btn,
+        .modal-content:has(#expensesList) #totalAmount {
+            position: relative;
+            top: 20px;
+        }
+
+        .modal-content:has(#expensesList) #expensesList {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
