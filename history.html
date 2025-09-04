@@ -267,6 +267,9 @@
     document.getElementById('historyBtn').addEventListener('click', () => {
         window.location.href = 'index.html'; // откроет history.html из той же папки
     });
+
+    console.log(window.location.origin);
+
     let selectedCategory = null;
     let selectedYear = '2025';
 
@@ -304,6 +307,7 @@
         modal.style.display = 'none';
     });
 
+
     document.getElementById('filterBtn').addEventListener('click', async () => {
         const month = document.getElementById('month').value;
         const year = selectedYear;
@@ -314,7 +318,7 @@
         document.getElementById('totalAmount').textContent = 'Итого: 0.00';
 
         try {
-            const url = `https://асходы-нашей-семьи.рф/get_expenses?month=${month}&year=${year}` + (category ? `&category=${category}` : '');
+            const url = `https://расходы-нашей-семьи.рф/get_expenses?month=${month}&year=${year}` + (category ? `&category=${category}` : '');
             const response = await fetch(url);
             const data = await response.json();
 

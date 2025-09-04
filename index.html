@@ -128,6 +128,8 @@
     const amountInput = document.getElementById('amount');
     let selectedCategory = null;
 
+    console.log(window.location.origin);
+
     // Выбор категории
     document.querySelectorAll('.category-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -173,7 +175,7 @@
 
         // Пример fetch-запроса
         try {
-            const response = await fetch('http://5.129.207.51:5000/add_expense', {
+            const response = await fetch('https://расходы-нашей-семьи.рф/add_expense', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
