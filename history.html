@@ -60,6 +60,13 @@
         .button-grid button:hover {
             background: #163832;
         }
+        #totalAmount {
+            font-weight: bold;
+            color: #0B2B26;
+            position: absolute;
+            top: 14px;
+            left: 22px;
+        }
 
         .category-btn.selected {
             background: #0B2B26;
@@ -200,22 +207,20 @@
             margin-top: 10px;
         }
 
+
         /* Если высота больше 560px */
         .modal-content:has(#expensesList) {
             min-height: 561px; /* триггер для смещения */
         }
-
-        /* Смещаем элементы вниз на 20px */
-
         .modal-content:has(#expensesList) .close-btn {
-            top: 20px;
+            top: 35px;
         }
         .modal-content:has(#expensesList) #totalAmount {
-            top: 25px;
+            top: 40px;
         }
 
         .modal-content:has(#expensesList) #expensesList {
-            margin-top: 20px;
+            margin-top: 35px;
         }
     </style>
 </head>
@@ -272,7 +277,7 @@
 <!-- Модальное окно -->
 <div class="modal" id="expensesModal">
     <div class="modal-content">
-        <span id="totalAmount" style="font-weight: bold; color: #0B2B26; position: absolute; top: 14px; left: 22px;">Итого: 0.00</span>
+        <span id="totalAmount">Итого: 0.00</span>
         <button class="close-btn" id="closeModal">Закрыть</button>
         <div id="expensesList">
             <div class="no-expenses">Выберите фильтр, чтобы увидеть расходы</div>
@@ -282,22 +287,9 @@
 
 <script>
 
-    // const modalContent = document.querySelector('.modal-content');
-    // const expensesList = document.getElementById('expensesList');
-    // const closeBtn = document.querySelector('.close-btn');
-    // const totalAmount = document.getElementById('totalAmount');
-    //
-    // if (modalContent.offsetHeight > 560) {
-    //     expensesList.style.top = '20px';
-    //     closeBtn.style.top = '20px';
-    //     totalAmount.style.top = '20px';
-    // }
-
     document.getElementById('historyBtn').addEventListener('click', () => {
         window.location.href = 'index.html'; // откроет history.html из той же папки
     });
-
-    console.log(window.location.origin);
 
     let selectedCategory = null;
     let selectedYear = '2025';
