@@ -207,10 +207,11 @@
 
         /* Смещаем элементы вниз на 20px */
 
-        .modal-content:has(#expensesList) .close-btn,
-        .modal-content:has(#expensesList) #totalAmount {
-            position: relative;
+        .modal-content:has(#expensesList) .close-btn {
             top: 20px;
+        }
+        .modal-content:has(#expensesList) #totalAmount {
+            top: 25px;
         }
 
         .modal-content:has(#expensesList) #expensesList {
