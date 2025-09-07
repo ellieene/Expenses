@@ -110,6 +110,12 @@
         <button type="button" class="category-btn" data-value="Разное">Разное</button>
     </div>
 
+    <label class="label">Описание:</label>
+    <textarea id="description" maxlength="256" placeholder="Введите описание (необязательно)"
+              style="width: 94%; height: 60px; padding: 10px; font-size: 14px;
+                     border-radius: 10px; border: none; margin-bottom: 20px;
+                     background: #DAF1DE; color: #0B2B26; resize: none;"></textarea>
+
     <label class="label">Сумма:</label>
     <input
             type="tel"
@@ -168,13 +174,14 @@
     document.getElementById('submitBtn').addEventListener('click', async () => {
         const amountStr = amountInput.value.replace(/\./g, '');
         const amount = parseFloat(amountStr);
+        const description = document.getElementById('description').value.trim();
 
         if (!selectedCategory) return alert('Выберите категорию!');
         if (isNaN(amount) || amount <= 0) return alert('Введите корректную сумму!');
+        if (description.length > 256) return alert('Описание не должно превышать 256 символов!');
 
-        const data = { category: selectedCategory, amount };
+        const data = { category: selectedCategory, amount, description };
 
-        // Пример fetch-запроса
         try {
             const response = await fetch('https://расходы-нашей-семьи.рф/add_expense', {
                 method: 'POST',
@@ -185,6 +192,7 @@
             if(response.ok){
                 alert('Расход добавлен!');
                 amountInput.value = '';
+                document.getElementById('description').value = '';
                 document.querySelectorAll('.category-btn').forEach(c => c.classList.remove('selected'));
                 selectedCategory = null;
             } else {
