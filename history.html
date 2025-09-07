@@ -355,12 +355,16 @@
                 total += row.amount;
                 const card = document.createElement('div');
                 card.className = 'expense-card';
+
+                // формируем блок описания только если оно есть
+                const descriptionHtml = row.description ? `<div><strong>Описание:</strong> ${row.description}</div>` : '';
+
                 card.innerHTML = `
-                <div><strong>Категория:</strong> ${row.category}</div>
-                <div><strong>Описание:</strong> ${row.description}</div>
-                <div><strong>Сумма:</strong> ${row.amount.toFixed(2)}</div>
-                <div><strong>Дата:</strong> ${row.date}</div>
-            `;
+                    <div><strong>Категория:</strong> ${row.category}</div>
+                    ${descriptionHtml}
+                    <div><strong>Сумма:</strong> ${row.amount.toFixed(2)}</div>
+                    <div><strong>Дата:</strong> ${row.date}</div>
+                `;
                 expensesList.appendChild(card);
             });
 
