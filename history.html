@@ -357,6 +357,7 @@
                 card.className = 'expense-card';
                 card.innerHTML = `
                 <div><strong>Категория:</strong> ${row.category}</div>
+                <div><strong>Описание:</strong> ${row.description}</div>
                 <div><strong>Сумма:</strong> ${row.amount.toFixed(2)}</div>
                 <div><strong>Дата:</strong> ${row.date}</div>
             `;
@@ -368,7 +369,6 @@
         } catch(err){
             expensesList.innerHTML = '<div class="no-expenses">Ошибка при получении данных</div>';
             document.getElementById('totalAmount').textContent = 'Итого: 0.00';
-            console.error(err);
         }
     });
 </script>
