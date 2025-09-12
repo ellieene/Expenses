@@ -366,7 +366,28 @@
                     ${descriptionHtml}
                     <div><strong>Сумма:</strong> ${row.amount.toFixed(2)}</div>
                     <div><strong>Дата:</strong> ${row.date}</div>
+                    <button class="delete-btn" style="background:#DA3B3B; color:white; border:none; border-radius:5px; padding:5px 10px; cursor:pointer; margin-top:5px;">❌ Удалить</button>
                 `;
+                card.querySelector('.delete-btn').addEventListener('click', async () => {
+                    const confirmDelete = confirm('Вы точно хотите удалить эту запись?');
+                    if (!confirmDelete) return;
+
+                    try {
+                        const response = await fetch(`https://расходы-нашей-семьи.рф/delete_expense?id=${row.id}`, {
+                            method: 'DELETE'
+                        });
+                        const result = await response.json();
+                        if (response.ok) {
+                            card.remove();
+                            total -= row.amount;
+                            document.getElementById('totalAmount').textContent = `Итого: ${total.toFixed(2)}`;
+                        } else {
+                            alert(result.error || 'Ошибка при удалении');
+                        }
+                    } catch (err) {
+                        alert('Ошибка при подключении к серверу');
+                    }
+                });
                 expensesList.appendChild(card);
             });
 
