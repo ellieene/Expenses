@@ -44,6 +44,11 @@
             margin-bottom: 20px;
         }
 
+        .category-btn.selected {
+            background: #0B2B26;
+            color: #DAF1DE;
+        }
+
         .button-grid button {
             background: #235347;
             color: #DAF1DE;
@@ -74,20 +79,44 @@
         }
 
         .submit-btn {
-            background: #0B2B26;
+            background: #235347;
             color: #DAF1DE;
             border: none;
-            padding: 12px 0;
             width: 100%;
+            height: 45px;
             font-size: 18px;
             border-radius: 10px;
             cursor: pointer;
             font-weight: bold;
             transition: background 0.2s;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .submit-btn:hover {
             background: #163832;
+        }
+
+        /* Спиннер */
+        .spinner {
+            border: 3px solid rgba(218, 241, 222, 0.3);
+            border-top: 3px solid #DAF1DE;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 0.8s linear infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none; /* скрыт по умолчанию */
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
         }
 
         .selected {
@@ -124,18 +153,19 @@
             placeholder="0.000"
             id="amount">
 
-    <button class="submit-btn" id="submitBtn">Отправить</button>
+    <button class="submit-btn" id="submitBtn">
+        <p1 id="submit">Отправить</p1>
+        <div class="spinner" id="spinner"></div>
+    </button>
 </div>
 
 <script>
-
     document.getElementById('historyBtn').addEventListener('click', () => {
-        window.location.href = 'history.html'; // откроет history.html из той же папки
+        window.location.href = 'history.html';
     });
+
     const amountInput = document.getElementById('amount');
     let selectedCategory = null;
-
-    console.log(window.location.origin);
 
     // Выбор категории
     document.querySelectorAll('.category-btn').forEach(btn => {
@@ -146,15 +176,11 @@
         });
     });
 
-    // Форматирование суммы с сохранением позиции курсора
+    // Форматирование суммы
     amountInput.addEventListener('input', (e) => {
         let start = amountInput.selectionStart;
         let end = amountInput.selectionEnd;
-
-        // Убираем все кроме цифр
         let val = amountInput.value.replace(/\D/g, '');
-
-        // Форматируем с точками каждые 3 цифры
         let formatted = '';
         let count = 0;
         for (let i = val.length - 1; i >= 0; i--) {
@@ -162,8 +188,6 @@
             count++;
             if (count % 3 === 0 && i !== 0) formatted = '.' + formatted;
         }
-
-        // Корректируем позицию курсора
         let diff = formatted.length - val.length;
         amountInput.value = formatted;
         let newPos = start + diff;
@@ -171,7 +195,11 @@
     });
 
     // Отправка данных
-    document.getElementById('submitBtn').addEventListener('click', async () => {
+    const submitBtn = document.getElementById('submitBtn');
+    const submit = document.getElementById('submit');
+    const spinner = document.getElementById('spinner');
+
+    submitBtn.addEventListener('click', async () => {
         const amountStr = amountInput.value.replace(/\./g, '');
         const amount = parseFloat(amountStr);
         const description = document.getElementById('description').value.trim();
@@ -182,6 +210,11 @@
 
         const data = { category: selectedCategory, amount, description };
 
+        // Показать спиннер и заблокировать кнопку
+        submit.style.display = "none";
+        spinner.style.display = 'block';
+        submitBtn.disabled = true;
+
         try {
             const response = await fetch('https://расходы-нашей-семьи.рф/add_expense', {
                 method: 'POST',
@@ -189,7 +222,7 @@
                 body: JSON.stringify(data)
             });
 
-            if(response.ok){
+            if (response.ok) {
                 alert('Расход добавлен!');
                 amountInput.value = '';
                 document.getElementById('description').value = '';
@@ -200,6 +233,10 @@
             }
         } catch (err) {
             alert('Ошибка соединения с сервером.');
+        } finally {
+            spinner.style.display = 'none';
+            submit.style.display = 'block';
+            submitBtn.disabled = false;
         }
     });
 </script>
